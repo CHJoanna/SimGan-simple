@@ -1,0 +1,3 @@
+model_checkpoint_path: "pretrained_discriminator.ckpt"
+all_model_checkpoint_paths: "pretrained_refiner.ckpt"
+all_model_checkpoint_paths: "pretrained_discriminator.ckpt"
