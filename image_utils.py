@@ -125,6 +125,7 @@ def immerge(images, row, col):
     if c > 1:
         img = np.zeros((h * row, w * col, c))
     else:
+	images = images[:,:,:,0]
         img = np.zeros((h * row, w * col))
     for idx, image in enumerate(images):
         i = idx % col
