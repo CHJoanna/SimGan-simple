@@ -3,7 +3,7 @@ from __future__ import absolute_import, division, print_function
 import tensorflow as tf
 
 
-def image_batch(image_paths, batch_size, load_size=286, crop_size=256, channels=3, shuffle=True,
+def image_batch(image_paths, batch_size, load_size=286, crop_size=256, channels=3, ratio=1, shuffle=True,
                 num_threads=4, min_after_dequeue=100, allow_smaller_final_batch=False):
     """ for jpg and png files """
     # queue and reader
@@ -19,8 +19,8 @@ def image_batch(image_paths, batch_size, load_size=286, crop_size=256, channels=
     tf.image.resize_images collapse. Maybe it's a bug!
     '''
     img = tf.image.random_flip_left_right(img)
-    img = tf.image.resize_images(img, [load_size, load_size])
-    img = tf.random_crop(img, [crop_size, crop_size, channels])
+    img = tf.image.resize_images(img, [load_size, load_size*ratio])
+    img = tf.random_crop(img, [crop_size, crop_size*ratio, channels])
     img = tf.cast(img, tf.float32) / 127.5 - 1
 
     # batch
@@ -41,10 +41,10 @@ def image_batch(image_paths, batch_size, load_size=286, crop_size=256, channels=
 
 class ImageData:
 
-    def __init__(self, session, image_paths, batch_size, load_size=286, crop_size=256, channels=3, shuffle=True,
+    def __init__(self, session, image_paths, batch_size, load_size=286, crop_size=256, channels=3, ratio=1, shuffle=True,
                  num_threads=4, min_after_dequeue=100, allow_smaller_final_batch=False):
         self.sess = session
-        self.img_batch, self.img_num = image_batch(image_paths, batch_size, load_size, crop_size, channels, shuffle,
+        self.img_batch, self.img_num = image_batch(image_paths, batch_size, load_size, crop_size, channels, ratio, shuffle,
                                                    num_threads, min_after_dequeue, allow_smaller_final_batch)
 
     def __len__(self):

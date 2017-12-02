@@ -25,6 +25,7 @@ parser.add_argument('--lr', dest='lr', type=float, default=0.0002, help='initial
 parser.add_argument('--gpu_id', dest='gpu_id', type=int, default=0, help='GPU ID')
 parser.add_argument('--channel', dest='channel', type=int, default=3, help='image channel')
 parser.add_argument('--lambda_', dest='lambda_', type=float, default=10.0, help='lambda')
+parser.add_argument('--ratio', dest='ratio', type=int, default=1, help='width/height ratio')
 args = parser.parse_args()
 
 dataset = args.dataset
@@ -36,22 +37,23 @@ lr = args.lr
 gpu_id = args.gpu_id
 channel=args.channel
 lambda_ = args.lambda_
+ratio = args.ratio
 
 
 """ graphs """
 with tf.device('/gpu:%d' % gpu_id):
     ''' graph '''
     # nodes
-    x = tf.placeholder(tf.float32, shape=[None, crop_size, crop_size, channel])
-    y = tf.placeholder(tf.float32, shape=[None, crop_size, crop_size, channel])
+    x = tf.placeholder(tf.float32, shape=[None, crop_size, crop_size*ratio, channel])
+    y = tf.placeholder(tf.float32, shape=[None, crop_size, crop_size*ratio, channel])
 
-    R_x_history = tf.placeholder(tf.float32, shape=[None, crop_size, crop_size, channel])
+    R_x_history = tf.placeholder(tf.float32, shape=[None, crop_size, crop_size*ratio, channel])
 
-    R_x = models.refiner(x, 'R_x')
+    R_x = models.refiner_cyc(x, 'R_x')
 
-    D_y_logits = models.discriminator(y, 'd')
-    D_R_x_logits = models.discriminator(R_x, 'd', reuse=True)
-    D_R_x_history_logits = models.discriminator(R_x_history, 'd', reuse=True)
+    D_y_logits = models.discriminator_global(y, 'd')
+    D_R_x_logits = models.discriminator_global(R_x, 'd', reuse=True)
+    D_R_x_history_logits = models.discriminator_global(R_x_history, 'd', reuse=True)
 
     # losses
     realism_loss = tf.identity(ops.l2_loss(D_R_x_logits, tf.ones_like(D_R_x_logits)), name='realism_loss')
@@ -101,14 +103,14 @@ it_cnt, update_cnt = ops.counter()
 
 '''data'''
 x_img_paths = glob('./datasets/' + dataset + '/trainA/*.png')
-y_img_paths = glob('./datasets/' + dataset + '/trainB2/*.png')
-x_data_pool = data.ImageData(sess, x_img_paths, batch_size, channels=channel, load_size=load_size, crop_size=crop_size)
-y_data_pool = data.ImageData(sess, y_img_paths, batch_size, channels=channel, load_size=load_size, crop_size=crop_size)
+y_img_paths = glob('./datasets/' + dataset + '/trainB/*.png')
+x_data_pool = data.ImageData(sess, x_img_paths, batch_size, channels=channel, load_size=load_size, crop_size=crop_size, ratio=ratio)
+y_data_pool = data.ImageData(sess, y_img_paths, batch_size, channels=channel, load_size=load_size, crop_size=crop_size, ratio=ratio)
 
-x_test_img_paths = glob('./datasets/' + dataset + '/testA/*.png')
-y_test_img_paths = glob('./datasets/' + dataset + '/testB2/*.png')
-x_test_pool = data.ImageData(sess, x_test_img_paths, batch_size, channels=channel, load_size=load_size, crop_size=crop_size)
-y_test_pool = data.ImageData(sess, y_test_img_paths, batch_size, channels=channel, load_size=load_size, crop_size=crop_size)
+x_test_img_paths = glob('./datasets/' + dataset + '/trainA/*.png')
+y_test_img_paths = glob('./datasets/' + dataset + '/trainB/*.png')
+x_test_pool = data.ImageData(sess, x_test_img_paths, batch_size, channels=channel, load_size=load_size, crop_size=crop_size, ratio=ratio)
+y_test_pool = data.ImageData(sess, y_test_img_paths, batch_size, channels=channel, load_size=load_size, crop_size=crop_size, ratio=ratio)
 
 R_x_pool = utils.ItemPool()
 
@@ -128,14 +130,14 @@ if ckpt_path is None:
         threads = tf.train.start_queue_runners(sess=sess, coord=coord)
 
         print("Pretrain refiner")
-        for it in range(500): 
+        for it in range(200): 
             x_real_ipt = x_data_pool.batch()
             refiner_summary_opt, _ = sess.run([refiner_summary, g_train_op], feed_dict={x: x_real_ipt})
             summary_writer.add_summary(refiner_summary_opt, it)
         save_path = saver.save(sess, '%s/pretrained_refiner.ckpt' % (ckpt_dir))
 
         print("Pretrain descriminator")
-        for it in range(100):            
+        for it in range(50):            
             # prepare data
             x_real_ipt = x_data_pool.batch()
             y_real_ipt = y_data_pool.batch()
