@@ -52,7 +52,7 @@ with tf.device('/gpu:%d' % gpu_id):
     R_x = models.refiner_cyc(x, 'R_x')
 
     D_y_logits = models.discriminator_global(y, 'd')
-    D_R_x_logits = models.discriminator_global(R_x, 'd', reuse=True)
+    D_R_x_logits = models.discriminator_gloabl(R_x, 'd', reuse=True)
     D_R_x_history_logits = models.discriminator_global(R_x_history, 'd', reuse=True)
 
     # losses
