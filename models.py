@@ -27,15 +27,6 @@ def deconv2d(input_, output_dim, ks=4, s=2, stddev=0.02, name="deconv2d"):
                                     weights_initializer=tf.truncated_normal_initializer(stddev=stddev),
                                     biases_initializer=None)
 
-def fully_connected(input_, name, n_out, activation_fn=tf.nn.relu):
-    n_in = input_.get_shape()[-1].value
-    with tf.variable_scope(name):
-        weights = tf.get_variable('weights', [n_in, n_out], tf.float32, xavier_initializer())
-        biases = tf.get_variable("bias", [n_out], tf.float32, tf.constant_initializer(0.0))
-        logits = tf.nn.bias_add(tf.matmul(input_, weights), biases)
-        return activation_fn(logits)
-
-
 
 def discriminator(img, scope, df_dim=64, reuse=False, train=True):
     """
@@ -137,30 +128,28 @@ def discriminator_global(img, scope, df_dim=64, reuse=False, train=True):
     """
     with local and global loss
     """
+
+    print ("global+local disciminator input", img) #(?, 128, 256, 3)
     with tf.variable_scope(scope + '_discriminator', reuse=reuse):
-        h0 = lrelu(conv2d(img, df_dim, name='d_h0_conv')) # (?, 128, 256, 64)
-        h1 = lrelu(bn(conv2d(h0, df_dim*2, name='d_h1_conv'), 'd_bn1'))  # (?, 64, 128, 128)
-        h2 = lrelu(bn(conv2d(h1, df_dim*4, name='d_h2_conv'), 'd_bn2')) # (?, 32, 64, 256)
-        h3 = lrelu(bn(conv2d(h2, df_dim*8, s=1, name='d_h3_conv'), 'd_bn3')) #(?, 32, 64, 512)
-        h4 = conv2d(h3, 1, s=1, name='d_h3_pred')  #shape=(?, 32, 64, 1)
+        h0 = lrelu(conv2d(img, df_dim, name='d_h0_conv')) #(?, 64, 128, 64)
+        h1 = lrelu(bn(conv2d(h0, df_dim*2, name='d_h1_conv'), 'd_bn1')) #(?, 32, 64, 128)
+        h2 = lrelu(bn(conv2d(h1, df_dim*4, name='d_h2_conv'), 'd_bn2')) #(?, 16, 32, 256)
+        h3 = lrelu(bn(conv2d(h2, df_dim*8, s=1, name='d_h3_conv'), 'd_bn3')) #(?, 16, 32, 512)
+        h4 = conv2d(h3, 1, s=1, name='d_h3_pred') #(?, 16, 32, 1)
 
         # flatten
         h_local = slim.flatten(h4)
 	h_local = slim.fully_connected(h_local, 512,
                                               activation_fn=None,
                                               scope='h_local')
-        print("h1", h1)
-        print("h2", h2)
-        print("h3", h3)
-        print("h4", h4)
         print("h_local", h_local)
 	
 	h5 = slim.dropout(h3, 0.4, scope='dropout3')
-        h5 = lrelu(bn(conv2d(h5, df_dim*16, name='d_h5_conv'), 'd_bn5')) #(?, 16, 32, 1024)
+        h5 = lrelu(bn(conv2d(h5, df_dim*16, name='d_h5_conv'), 'd_bn5')) #(?, 8, 16, 1024)
 	h5 = slim.dropout(h5, 0.4, scope='dropout5')
-	h6 = lrelu(bn(conv2d(h5, df_dim*32, name='d_h6_conv'), 'd_bn6')) #(?, 8, 16, 2048)
+	h6 = lrelu(bn(conv2d(h5, df_dim*32, name='d_h6_conv'), 'd_bn6')) #(?, 4, 8, 2048)
 	h6 = slim.dropout(h6, 0.4, scope='dropout6')
-	h7 = lrelu(bn(conv2d(h6, df_dim*64, name='d_h7_conv'), 'd_bn7'))
+	h7 = lrelu(bn(conv2d(h6, df_dim*64, name='d_h7_conv'), 'd_bn7')) #(?, 2, 4, 4096)
 	h7 = slim.dropout(h7, 0.4, scope='dropout7')
         h_global = slim.flatten(h7)
         h_global = slim.fully_connected(h_global, 512,
@@ -171,10 +160,8 @@ def discriminator_global(img, scope, df_dim=64, reuse=False, train=True):
                                               activation_fn=None,
                                               scope='h_global2')
 	#h_global = tf.nn.softmax(h_global, name='Predictions')
-        h_concat = tf.concat([h_local, h_global], axis=1)
+        h_concat = tf.concat([h_local, h_global], axis=1) #(?, 528)
 
-        print("h5", h5)
-        print("h6", h6)
         print("h_global", h_global)
         print("h_concat", h_concat)
         return h_concat
