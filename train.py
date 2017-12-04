@@ -51,34 +51,34 @@ with tf.device('/gpu:%d' % gpu_id):
 
     R_x = models.refiner_cyc(x, 'R_x')
 
-    D_y_logits = models.discriminator_global(y, 'd')
-    D_R_x_logits = models.discriminator_global(R_x, 'd', reuse=True)
-    D_R_x_history_logits = models.discriminator_global(R_x_history, 'd', reuse=True)
+    D_y = models.discriminator_global(y, 'd')
+    D_R_x = models.discriminator_global(R_x, 'd', reuse=True)
+    D_R_x_history = models.discriminator_global(R_x_history, 'd', reuse=True)
 
     # losses
-    realism_loss = tf.identity(ops.l2_loss(D_R_x_logits, tf.ones_like(D_R_x_logits)), name='realism_loss')
+    realism_loss = tf.identity(ops.l2_loss(D_R_x, tf.ones_like(D_R_x)), name='realism_loss')
     regularization_loss = tf.identity(ops.l1_loss(R_x, x) * lambda_, name='regularization_loss')
-    refiner_loss = tf.identity((realism_loss + regularization_loss)/2.0, name="refiner_loss")
+    generator_loss = tf.identity((realism_loss + regularization_loss)/2.0, name="generator_loss")
 
-    refiner_d_loss = tf.identity(ops.l2_loss(D_R_x_logits, tf.zeros_like(D_R_x_logits)), name='refiner_d_loss')
-    synthetic_d_loss = tf.identity(ops.l2_loss(D_y_logits, tf.ones_like(D_y_logits)), name='synthetic_d_loss')
-    discrim_loss = tf.identity((refiner_d_loss + synthetic_d_loss)/2.0, name="discrim_loss")
+    refiner_d_loss = tf.identity(ops.l2_loss(D_R_x, tf.zeros_like(D_R_x)), name='refiner_d_loss')
+    real_d_loss = tf.identity(ops.l2_loss(D_y, tf.ones_like(D_y)), name='real_d_loss')
+    discrim_loss = tf.identity((refiner_d_loss + real_d_loss)/2.0, name="discriminator_loss")
 
     # with history
-    refiner_d_loss_with_history = tf.identity(ops.l2_loss(D_R_x_history_logits, tf.zeros_like(D_R_x_history_logits)), 
+    refiner_d_loss_with_history = tf.identity(ops.l2_loss(D_R_x_history, tf.zeros_like(D_R_x_history)), 
         name='refiner_d_loss_with_history')
 
-    discrim_loss_with_history = tf.identity((refiner_d_loss_with_history + synthetic_d_loss) / 2.0, 
+    discrim_loss_with_history = tf.identity((refiner_d_loss_with_history + real_d_loss) / 2.0, 
         name="discrim_loss_with_history")
 
     # summaries
     refiner_summary = ops.summary_tensors([realism_loss, regularization_loss])
-    refiner_summary_all = ops.summary(refiner_loss)
+    refiner_summary_all = ops.summary(generator_loss)
 
-    discrim_summary = ops.summary_tensors([refiner_d_loss, synthetic_d_loss])
+    discrim_summary = ops.summary_tensors([refiner_d_loss, real_d_loss])
     discrim_summary_all = ops.summary(discrim_loss)
 
-    discrim_summary_with_history = ops.summary_tensors([refiner_d_loss_with_history, synthetic_d_loss])
+    discrim_summary_with_history = ops.summary_tensors([refiner_d_loss_with_history, real_d_loss])
     discrim_summary_with_history_all = ops.summary(discrim_loss_with_history)
 
 
@@ -88,7 +88,7 @@ with tf.device('/gpu:%d' % gpu_id):
     g_var = [var for var in t_var if 'R_x_generator' in var.name]
 
     d_a_train_op = tf.train.AdamOptimizer(lr, beta1=0.5).minimize(discrim_loss_with_history, var_list=d_a_var)
-    g_train_op = tf.train.AdamOptimizer(lr, beta1=0.5).minimize(refiner_loss, var_list=g_var)
+    g_train_op = tf.train.AdamOptimizer(lr, beta1=0.5).minimize(generator_loss, var_list=g_var)
 
 
 """ train """
