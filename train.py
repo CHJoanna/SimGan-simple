@@ -42,11 +42,9 @@ ratio = args.ratio
 
 """ graphs """
 with tf.device('/gpu:%d' % gpu_id):
-    ''' graph '''
     # nodes
     x = tf.placeholder(tf.float32, shape=[None, crop_size, crop_size*ratio, channel])
     y = tf.placeholder(tf.float32, shape=[None, crop_size, crop_size*ratio, channel])
-
     R_x_history = tf.placeholder(tf.float32, shape=[None, crop_size, crop_size*ratio, channel])
 
     R_x = models.refiner_cyc(x, 'R_x')
@@ -153,11 +151,6 @@ if ckpt_path is None:
     except Exception, e:
         coord.request_stop(e)
 	print (e)
-    #finally:
-    #    print("Stop threads and close session!")
-    #    coord.request_stop()
-    #    coord.join(threads)
-    #    sess.close()       
 else:
     coord = tf.train.Coordinator()
     threads = tf.train.start_queue_runners(sess=sess, coord=coord)
