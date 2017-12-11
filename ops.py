@@ -16,7 +16,6 @@ def leak_relu(x, leak, scope=None):
         y = tf.maximum(x, leak * x)
         return y
 
-
 """ loss """
 def l2_loss(a, b, weights=1.0, scope=None):
     with tf.name_scope(scope, 'l2_loss', [a, b, weights]):
@@ -30,18 +29,15 @@ def l1_loss(a, b, weights=1.0, scope=None):
         return loss
 
 
-
-def conv2d(input_, output_dim, ks=4, s=2, stddev=0.02, padding='SAME', name="conv2d"):
-    with tf.variable_scope(name):
-        return slim.conv2d(input_, output_dim, ks, s, padding=padding, activation_fn=None,
-                            weights_initializer=tf.truncated_normal_initializer(stddev=stddev),
-                            biases_initializer=None)
+#def conv2d(input_, output_dim, ks=4, s=2, stddev=0.02, padding='SAME', name="conv2d"):
+#    with tf.variable_scope(name):
+#        return slim.conv2d(input_, output_dim, ks, s, padding=padding, activation_fn=None,
+#                            weights_initializer=tf.truncated_normal_initializer(stddev=stddev),
+#                            biases_initializer=None)
 
 
 
 """ summary """
-
-
 def summary(tensor, summary_type=['mean', 'stddev', 'max', 'min', 'sparsity', 'histogram']):
     """ Attach a lot of summaries to a Tensor. """
 
@@ -49,7 +45,7 @@ def summary(tensor, summary_type=['mean', 'stddev', 'max', 'min', 'sparsity', 'h
     # session. This helps the clarity of presentation on tensorboard.
     tensor_name = re.sub('%s_[0-9]*/' % 'tower', '', tensor.name)
     tensor_name = re.sub(':', '-', tensor_name)
-
+    print ("summary", tensor)
     with tf.name_scope('summary_' + tensor_name):
         summaries = []
         if len(tensor._shape) == 0:

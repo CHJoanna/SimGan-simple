@@ -68,14 +68,14 @@ with tf.device('/gpu:%d' % gpu_id):
                                             name="discrim_loss_with_history")
 
     # summaries
-    refiner_summary = ops.summary_tensors([realism_loss, regularization_loss])
-    refiner_summary_all = ops.summary(generator_loss)
+    refiner_summary = ops.summary_tensors([realism_loss, regularization_loss, generator_loss])
+    #refiner_summary_all = ops.summary(generator_loss)
 
-    discrim_summary = ops.summary_tensors([refiner_d_loss, real_d_loss])
-    discrim_summary_all = ops.summary(discrim_loss)
+    discrim_summary = ops.summary_tensors([refiner_d_loss, real_d_loss, discrim_loss])
+    #discrim_summary_all = ops.summary(discrim_loss)
 
-    discrim_summary_with_history = ops.summary_tensors([refiner_d_loss_with_history, real_d_loss])
-    discrim_summary_with_history_all = ops.summary(discrim_loss_with_history)
+    discrim_summary_with_history = ops.summary_tensors([refiner_d_loss_with_history, real_d_loss, discrim_loss_with_history])
+    #discrim_summary_with_history_all = ops.summary(discrim_loss_with_history)
 
     # optimizer
     t_var = tf.trainable_variables()
@@ -176,7 +176,6 @@ try:
         for k in xrange(2):
             refiner_summary_opt, _ = sess.run([refiner_summary, g_train_op], feed_dict={x: x_real_ipt})
             summary_writer.add_summary(refiner_summary_opt, it * 2 + k)
-
         # train D
         for k in xrange(1):
             discrim_summary_opt, _ = sess.run([discrim_summary_with_history, d_a_train_op],
