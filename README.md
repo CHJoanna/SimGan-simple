@@ -11,6 +11,10 @@ From left to right: virtual, refined using SimGAN, refined using model from this
 
 <img src="./demo/RefinedImg.png" alt="sample output"/>
 
+  
+    
+I also try to do using CycleGAN, see the [exapmle1](./demo/CycleGAN1.jpg) and [example2](./demo/CycleGAN2.jpg).
+
 ## Data
 Road scene dataset:
 1. Synthetic images: [Virtual KITTI](http://www.europe.naverlabs.com/Research/Computer-Vision/Proxy-Virtual-Worlds)
@@ -26,8 +30,10 @@ Data directory:
     * the refined images will be saved under ```./test_predictions/```
 
 
-In addition, you could also download datasets to run CycleGAN or SimGAN by:
+In addition, you could also download datasets to run CycleGAN or SimGAN.
+For example:
 * horse2zebra dataset ```sh ./download_dataset.sh horse2zebra```
+* [example output](./demo/horse2zebra.png) of horse2zebra run using SimGAN after 20epochs with lambda_=0.1
 
 ## Train
 ```
