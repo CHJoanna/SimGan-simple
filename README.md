@@ -20,16 +20,20 @@ Data directory:
 * Training data:  
     * virtual images under ```./datasets/road/trainA```
     * real images under ```./datasets/road/trainB```
-* Validation data:  
-    * virtual images under ```./datasets/road/testA```
-    * real images under ```./datasets/road/testB```
+* Test data:
+    * modify test.py to the test data directory: ```x_list = glob('./datasets/' + dataset + '/vkitti_1.3.1_rgb/0018/morning/*.png')```
+    * the refined images will be saved under ```./test_predictions/```
 
-### Train the model
+
+In addition, you could also download datasets to run CycleGAN or SimGAN by:
+* horse2zebra dataset ```sh ./download_dataset.sh horse2zebra```
+
+### Train
 ```
 python train.py --dataset=road --channel=3 --ratio=2 --lambda_=10.0
 ```
 
-### Test the model
+### Test
 ```
 python test.py --dataset=road --channel=3 --ratio=2 --lambda_=10.0
 ```
