@@ -1,7 +1,7 @@
 # SimGAN
 ## Project Description 
 Title: **Make Virtual World Real**
-* This project is motivated by[SimGAN](https://arxiv.org/pdf/1612.07828.pdf). 
+* This project is motivated by [SimGAN](https://arxiv.org/pdf/1612.07828.pdf). 
 Detail is described in the [report](./demo/report.pdf).
 * models.py includes SimGAN, CycleGAN and model from this work.
 
