@@ -30,6 +30,9 @@ python train.py --dataset=road --channel=3 --ratio=2 --lambda_=10.0
 ```
 
 ### Test the model
+```
+python test.py --dataset=road --channel=3 --ratio=2 --lambda_=10.0
+```
 
 ## Acknowledgments
 Code modify from [CycleGAN-Tensorflow-PyTorch-Simple](https://github.com/LynnHo/CycleGAN-Tensorflow-PyTorch-Simple) and

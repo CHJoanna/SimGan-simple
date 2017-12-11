@@ -13,8 +13,8 @@ from glob import glob
 
 """ param """
 parser = argparse.ArgumentParser(description='')
-parser.add_argument('--dataset', dest='dataset', default='horse2zebra', help='which dataset to use')
-parser.add_argument('--crop_size', dest='crop_size', type=int, default=256, help='then crop to this size')
+parser.add_argument('--dataset', dest='dataset', default='road', help='which dataset to use')
+parser.add_argument('--crop_size', dest='crop_size', type=int, default=128, help='then crop to this size')
 parser.add_argument('--lambda_', dest='lambda_', type=float, default=10.0, help='lambda')
 parser.add_argument('--channel', dest='channel', type=int, default=3, help='image channel')
 parser.add_argument('--ratio', dest='ratio', type=int, default=1, help='width/height ratio')
