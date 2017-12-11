@@ -86,7 +86,6 @@ with tf.device('/gpu:%d' % gpu_id):
     g_train_op = tf.train.AdamOptimizer(lr, beta1=0.5).minimize(generator_loss, var_list=g_var)
 
 """ train """
-''' init '''
 # session
 config = tf.ConfigProto(allow_soft_placement=True)
 config.gpu_options.allow_growth = True
@@ -95,7 +94,7 @@ sess = tf.Session(config=config)
 # counter
 it_cnt, update_cnt = ops.counter()
 
-'''data'''
+# load data
 x_img_paths = glob('./datasets/' + dataset + '/trainA/*.png')
 y_img_paths = glob('./datasets/' + dataset + '/trainB/*.png')
 x_data_pool = data.ImageData(sess, x_img_paths, batch_size, channels=channel, load_size=load_size, crop_size=crop_size,
@@ -112,15 +111,17 @@ y_test_pool = data.ImageData(sess, y_test_img_paths, batch_size, channels=channe
 
 R_x_pool = utils.ItemPool()
 
-'''summary'''
+# summary
 summary_writer = tf.summary.FileWriter('./summaries/' + dataset + "_" + str(lambda_), sess.graph)
 
-'''saver'''
+# checkpoint
 ckpt_dir = './checkpoints/' + dataset + "_" + str(lambda_)
 utils.mkdir(ckpt_dir + '/')
 
 saver = tf.train.Saver(max_to_keep=5)
 ckpt_path = utils.load_checkpoint(ckpt_dir, sess, saver)
+
+# pre-train
 if ckpt_path is None:
     sess.run(tf.global_variables_initializer())
     try:
@@ -142,7 +143,7 @@ if ckpt_path is None:
             R_x_opt = sess.run(R_x, feed_dict={x: x_real_ipt})
             R_x_sample_ipt = np.array(R_x_pool(list(R_x_opt)))
 
-            # train D_a
+            # train D
             discrim_summary_opt, _ = sess.run([discrim_summary_with_history, d_a_train_op],
                                               feed_dict={y: y_real_ipt, R_x_history: R_x_sample_ipt})
             summary_writer.add_summary(discrim_summary_opt, it)
@@ -157,11 +158,8 @@ else:
     threads = tf.train.start_queue_runners(sess=sess, coord=coord)
     print('Copy variables from % s' % ckpt_path)
 
-'''train'''
+# train
 try:
-    # coord = tf.train.Coordinator()
-    # threads = tf.train.start_queue_runners(sess=sess, coord=coord)
-
     batch_epoch = min(len(x_data_pool), len(y_data_pool)) // batch_size
     max_it = epoch * batch_epoch
 
@@ -179,7 +177,7 @@ try:
             refiner_summary_opt, _ = sess.run([refiner_summary, g_train_op], feed_dict={x: x_real_ipt})
             summary_writer.add_summary(refiner_summary_opt, it * 2 + k)
 
-        # train D_a
+        # train D
         for k in xrange(1):
             discrim_summary_opt, _ = sess.run([discrim_summary_with_history, d_a_train_op],
                                               feed_dict={y: y_real_ipt, R_x_history: R_x_sample_ipt})
@@ -197,8 +195,6 @@ try:
         if (it + 1) % 100 == 0:
             save_path = saver.save(sess, '%s/Epoch_(%d)_(%dof%d).ckpt' % (ckpt_dir, epoch, it_epoch, batch_epoch))
             print('Model saved in file: % s' % save_path)
-
-        # sample
         if (it + 1) % 100 == 0:
             x_real_ipt = x_test_pool.batch()
             R_x_opt = sess.run(R_x, feed_dict={x: x_real_ipt})

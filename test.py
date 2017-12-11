@@ -4,7 +4,6 @@ import os
 import utils
 import models
 import argparse
-import numpy as np
 import tensorflow as tf
 import image_utils as im
 
@@ -34,7 +33,7 @@ with tf.Session() as sess:
 
     R_x = models.refiner(x, 'R_x')
 
-    # retore
+    # restore
     saver = tf.train.Saver()
     ckpt_path = utils.load_checkpoint('./checkpoints/' + dataset + "_" + str(lambda_), sess, saver)
     if ckpt_path is None:

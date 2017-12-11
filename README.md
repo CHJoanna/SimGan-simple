@@ -22,7 +22,7 @@ Data directory:
     * virtual images under ```./datasets/road/trainA```
     * real images under ```./datasets/road/trainB```
 * Test data:
-    * modify test.py to the test data directory: ```x_list = glob('./datasets/' + dataset + '/vkitti_1.3.1_rgb/0018/morning/*.png')```
+    * modify test.py for the test data directory: ```x_list = glob('./datasets/' + dataset + '/vkitti_1.3.1_rgb/0018/morning/*.png')```
     * the refined images will be saved under ```./test_predictions/```
 
 
