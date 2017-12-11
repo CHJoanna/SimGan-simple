@@ -1,3 +1,7 @@
+"""
+Source: https://github.com/LynnHo/CycleGAN-Tensorflow-PyTorch-Simple
+"""
+
 from __future__ import division
 from __future__ import print_function
 from __future__ import absolute_import
@@ -7,8 +11,6 @@ import tensorflow as tf
 
 
 """ ops """
-
-
 def leak_relu(x, leak, scope=None):
     with tf.name_scope(scope, 'leak_relu', [x, leak]):
         y = tf.maximum(x, leak * x)
@@ -16,8 +18,6 @@ def leak_relu(x, leak, scope=None):
 
 
 """ loss """
-
-
 def l2_loss(a, b, weights=1.0, scope=None):
     with tf.name_scope(scope, 'l2_loss', [a, b, weights]):
         loss = tf.reduce_mean((a - b) ** 2) * weights

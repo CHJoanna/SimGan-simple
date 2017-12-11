@@ -40,7 +40,8 @@ python test.py --dataset=road --channel=3 --ratio=2 --lambda_=10.0
 ```
 
 ## Note
-I use least square GAN instead of negative log likelihood objective.
+* I use least square GAN instead of negative log likelihood objective.
+* For tensorboard run: ```tensorboard --logdir=summaries```
 
 ## Acknowledgments
 Code modify from [CycleGAN-Tensorflow-PyTorch-Simple](https://github.com/LynnHo/CycleGAN-Tensorflow-PyTorch-Simple) and
