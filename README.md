@@ -2,7 +2,7 @@
 ## Project Description 
 Title: **Make Virtual World Real**
 * This project is motivated by[SimGAN](https://arxiv.org/pdf/1612.07828.pdf). 
-Detail is described in the report.
+Detail is described in the [report](./demo/report.pdf).
 * models.py includes SimGAN, CycleGAN and model from this work.
 
 ## Example Results
@@ -38,6 +38,9 @@ python train.py --dataset=road --channel=3 --ratio=2 --lambda_=10.0
 ```
 python test.py --dataset=road --channel=3 --ratio=2 --lambda_=10.0
 ```
+
+## Note
+I use least square GAN instead of negative log likelihood objective.
 
 ## Acknowledgments
 Code modify from [CycleGAN-Tensorflow-PyTorch-Simple](https://github.com/LynnHo/CycleGAN-Tensorflow-PyTorch-Simple) and
