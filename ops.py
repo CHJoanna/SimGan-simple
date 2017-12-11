@@ -78,8 +78,6 @@ def summary_tensors(tensors, summary_type=['mean', 'stddev', 'max', 'min', 'spar
 
 
 """ others """
-
-
 def counter(scope='counter'):
     with tf.variable_scope(scope):
         counter = tf.Variable(0, dtype=tf.int32, name='counter')

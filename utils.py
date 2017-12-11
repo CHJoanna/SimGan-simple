@@ -1,3 +1,7 @@
+"""
+Codes are modified from: https://github.com/LynnHo/CycleGAN-Tensorflow-PyTorch-Simple
+"""
+
 from __future__ import division
 from __future__ import print_function
 from __future__ import absolute_import

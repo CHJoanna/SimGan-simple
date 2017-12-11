@@ -7,6 +7,8 @@ These functions are all based on [-1.0, 1.0] image
 from __future__ import absolute_import, division, print_function
 import scipy.misc
 import numpy as np
+
+
 # import matplotlib.pyplot as plt
 
 
@@ -125,7 +127,7 @@ def immerge(images, row, col):
     if c > 1:
         img = np.zeros((h * row, w * col, c))
     else:
-	images = images[:,:,:,0]
+        images = images[:, :, :, 0]
         img = np.zeros((h * row, w * col))
     for idx, image in enumerate(images):
         i = idx % col
