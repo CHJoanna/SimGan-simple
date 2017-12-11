@@ -11,10 +11,11 @@ From left to right: virtual, refined using SimGAN, refined using model from this
 
 <img src="./demo/RefinedImg.png" alt="sample output"/>
 
-## Usage
-### Dataset
+## Data
+Road scene dataset:
 1. Synthetic images: [Virtual KITTI](http://www.europe.naverlabs.com/Research/Computer-Vision/Proxy-Virtual-Worlds)
-2. Real images: [KITTI Object Detection](http://www.cvlibs.net/datasets/kitti/eval_object.php?obj_benchmark=2d)(left color images of object data set)
+2. Real images: [KITTI Object Detection](http://www.cvlibs.net/datasets/kitti/eval_object.php?obj_benchmark=2d)
+
 
 Data directory:
 * Training data:  
@@ -28,12 +29,12 @@ Data directory:
 In addition, you could also download datasets to run CycleGAN or SimGAN by:
 * horse2zebra dataset ```sh ./download_dataset.sh horse2zebra```
 
-### Train
+## Train
 ```
 python train.py --dataset=road --channel=3 --ratio=2 --lambda_=10.0
 ```
 
-### Test
+## Test
 ```
 python test.py --dataset=road --channel=3 --ratio=2 --lambda_=10.0
 ```
