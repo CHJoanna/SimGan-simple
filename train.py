@@ -15,7 +15,7 @@ from glob import glob
 
 """ param """
 parser = argparse.ArgumentParser(description='')
-parser.add_argument('--dataset', dest='dataset', default='horse2zebra', help='which dataset to use')
+parser.add_argument('--dataset', dest='dataset', default='road', help='which dataset to use')
 parser.add_argument('--load_size', dest='load_size', type=int, default=128, help='scale images to this size')
 parser.add_argument('--crop_size', dest='crop_size', type=int, default=128, help='then crop to this size')
 parser.add_argument('--epoch', dest='epoch', type=int, default=200, help='# of epoch')
