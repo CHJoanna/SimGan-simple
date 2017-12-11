@@ -10,9 +10,9 @@ models.py includes SimGAN, CycleGAN and model from this work.
 
 ## Example Results
 From left to right: virtual, refined using SimGAN, refined using model from this work.
-<img src="./demo/virtual.gif" alt="virtual" width="256"/> <img src="./demo/SimGAN.gif" alt="SimGAN" width="256"/>  <img src="./demo/ThisWork.gif" alt="ThisWork" width="256"/>
+<img src="./demo/virtual.gif" alt="virtual" width="285"/> <img src="./demo/SimGAN.gif" alt="SimGAN" width="285"/>  <img src="./demo/ThisWork.gif" alt="ThisWork" width="285"/>
 
-<img src=".demo/RefinedImg.png"/>
+<img src="./demo/RefinedImg.png" alt="sample output"/>
 
 ## Acknowledgments
 Code modify from [CycleGAN-Tensorflow-PyTorch-Simple](https://github.com/LynnHo/CycleGAN-Tensorflow-PyTorch-Simple) and
