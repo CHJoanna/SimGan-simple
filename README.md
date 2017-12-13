@@ -1,7 +1,7 @@
 # SimGAN
 ## Project Description 
 Title: **Make Virtual World Real**
-* This project is motivated by[SimGAN](https://arxiv.org/pdf/1612.07828.pdf). 
+* This project is motivated by [SimGAN](https://arxiv.org/pdf/1612.07828.pdf). 
 Detail is described in the [report](./demo/report.pdf).
 * models.py includes SimGAN, CycleGAN and model from this work.
 
@@ -30,10 +30,9 @@ Data directory:
     * the refined images will be saved under ```./test_predictions/```
 
 
-In addition, you could also download datasets to run CycleGAN or SimGAN.
-For example: horse2zebra dataset ```sh ./download_dataset.sh horse2zebra```
-* [Example output](./demo/horse2zebra.png) of horse2zebra run using SimGAN after 20epochs with lambda_=0.1
-* [Example outpu](./demo/hand.jpg) of [NYU hand dataset](https://cims.nyu.edu/~tompson/NYU_Hand_Pose_Dataset.htm) run using SimGAN after 20epochs with lambda_=10.0
+In addition, you could also download datasets as [CycleGAN paper](https://arxiv.org/pdf/1703.10593.pdf) to run the models, e.g. ```sh ./download_dataset.sh horse2zebra```.
+* [Example output](./demo/horse2zebra.png) of horse2zebra run using SimGAN after 20 epochs with lambda_=0.1
+* [Example outpu](./demo/hand.jpg) of [NYU hand dataset](https://cims.nyu.edu/~tompson/NYU_Hand_Pose_Dataset.htm) run using SimGAN after 20 epochs with lambda_=10.0
 
 ## Train
 ```
